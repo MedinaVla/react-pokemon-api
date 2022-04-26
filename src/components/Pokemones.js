@@ -1,12 +1,16 @@
 // hooks react redux
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
+import "../css/Pokemons.css";
 // importamos la acción
-import { getPokemonsAction } from "../redux/pokesDucks";
+import {
+  getPokemonsAction,
+  getPreviousPokemonsAction,
+} from "../redux/pokesDucks";
 import { getNextPokemonsAction } from "../redux/pokesDucks";
 
 const Pokemons = () => {
+  const [isLoading, setIsLoading] = useState(false);
   // declaramos displach para llamar a la acción o acciones
   const dispatch = useDispatch();
 
@@ -15,25 +19,31 @@ const Pokemons = () => {
   const pokemons = useSelector((store) => store.pokemons.results);
 
   useEffect(() => {
-    function getPokemons() {
-      dispatch(getPokemonsAction());
-    }
+    const getPokemons = async () => {
+      setIsLoading(true);
+      await dispatch(getPokemonsAction());
+      setIsLoading(false);
+    };
     getPokemons();
-    // eslint-disable-next-line
-  }, []);
-
+  }, [dispatch]);
   return (
     <div>
-      <h1>Pokemones!</h1>
-      <button onClick={() => dispatch(getPokemonsAction())}>Obtener</button>
-      <button onClick={() => dispatch(getNextPokemonsAction(20))}>
-        Siguientes
+      <h1>Pokemons!</h1>
+
+      <button onClick={() => dispatch(getPreviousPokemonsAction())}>
+        Previous
       </button>
-      <ul>
+      <button onClick={() => dispatch(getNextPokemonsAction())}>Next</button>
+      <div className="pokemons-container">
         {pokemons.map((item) => (
-          <li key={item.name}>{item.name}</li>
+          <div className="pokemon-card" key={item.name}>
+            <img
+              alt={item.sprites.front_default}
+              src={item.sprites.other.dream_world.front_default}
+            />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

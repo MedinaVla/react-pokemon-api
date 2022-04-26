@@ -1,24 +1,27 @@
 import axios from "axios";
 
 // Constantes
-const dataInitial = {
+const initialState = {
   results: [],
   offset: 0,
+  unPokemon: null,
 };
 const GET_POKE_SUCCESS = "GET_POKE_SUCCESS";
 const GET_POKE_NEXT_SUCCESS = "GET_POKE_NEXT_SUCCESS";
-
+const GET_POKE_PREVIOUS_SUCCESS = "GET_POKE_PREVIOUS_SUCCESS";
+const POKE_INFO_EXITO = "POKE_INFO_EXITO";
 // Reducer
-export default function pokeReducer(state = dataInitial, action) {
+export default function pokeReducer(state = initialState, action) {
   switch (action.type) {
     case GET_POKE_SUCCESS:
-      return { ...state, results: action.payload };
+      return { ...state, ...action.payload };
     case GET_POKE_NEXT_SUCCESS:
-      return {
-        ...state,
-        results: action.payload.results,
-        offset: action.payload.offset,
-      };
+      return { ...state, ...action.payload };
+    case GET_POKE_PREVIOUS_SUCCESS:
+      return { ...state, ...action.payload };
+
+    case POKE_INFO_EXITO:
+      return { ...state, unPokemon: action.payload };
     default:
       return state;
   }
@@ -26,37 +29,120 @@ export default function pokeReducer(state = dataInitial, action) {
 
 // Acciones
 export const getPokemonsAction = () => async (dispatch, getState) => {
-  const { offset } = getState().pokemons;
   try {
     const res = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=20`
+      "https://pokeapi.co/api/v2/pokemon?offset=0&limit=20"
     );
+    let informationPoke = [];
+    const pokemonsUrl = await res.data.results.map((poke) => poke.url);
+    informationPoke = await Promise.all(
+      pokemonsUrl.map(async (url) => {
+        // console.log(url);
+        const pokeInformation = await axios.get(url);
+        return pokeInformation.data;
+      })
+    );
+    // informationPoke.map((item) => console.log(item.data.sprites.front_default));
+
     dispatch({
       type: GET_POKE_SUCCESS,
-      payload: res.data.results,
+      payload: { results: informationPoke },
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getNextPokemonsAction =
-  (offsetNumber) => async (dispatch, getState) => {
-    const { offset } = getState().pokemons;
-    const nextPokemons = offset + offsetNumber;
+export const getNextPokemonsAction = () => async (dispatch, getState) => {
+  const { offset } = getState().pokemons;
+  const next = offset + 20;
 
-    try {
-      const res = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon?offset=${nextPokemons}&limit=20`
-      );
-      dispatch({
-        type: GET_POKE_NEXT_SUCCESS,
-        payload: {
-          results: res.data.results,
-          offset: nextPokemons,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const res = await axios.get(
+      `https://pokeapi.co/api/v2/pokemon?offset=${next}&limit=20`
+    );
+
+    let informationPoke = [];
+    const pokemonsUrl = await res.data.results.map((poke) => poke.url);
+    informationPoke = await Promise.all(
+      pokemonsUrl.map(async (url) => {
+        console.log(url);
+        const pokeInformation = await axios.get(url);
+        return pokeInformation.data;
+      })
+    );
+    dispatch({
+      type: GET_POKE_NEXT_SUCCESS,
+      payload: {
+        results: informationPoke,
+        offset: next,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPreviousPokemonsAction = () => async (dispatch, getState) => {
+  const { offset } = getState().pokemons;
+  const previous = offset === 0 ? 0 : offset - 20;
+
+  try {
+    const res = await axios.get(
+      `https://pokeapi.co/api/v2/pokemon?offset=${previous}&limit=20`
+    );
+    let informationPoke = [];
+    const pokemonsUrl = await res.data.results.map((poke) => poke.url);
+    informationPoke = await Promise.all(
+      pokemonsUrl.map(async (url) => {
+        console.log(url);
+        const pokeInformation = await axios.get(url);
+        return pokeInformation.data;
+      })
+    );
+
+    dispatch({
+      type: GET_POKE_NEXT_SUCCESS,
+      payload: {
+        results: informationPoke,
+        offset: previous,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const unPokeDetalleAccion = (url) => async (dispatch, getState) => {
+  if (url === undefined) {
+    url = "https://pokeapi.co/api/v2/pokemon/1/";
+  }
+  //   if (localStorage.getItem(url)) {
+  //     dispatch({
+  //       type: POKE_INFO_EXITO,
+  //       payload: JSON.parse(localStorage.getItem(url)),
+  //     });
+  //     return;
+  //   }
+  try {
+    const res = await axios.get(url);
+    // console.log(res.data)
+    dispatch({
+      type: POKE_INFO_EXITO,
+      payload: {
+        name: res.data.name,
+        photo: res.data.sprites.front_default,
+        height: res.data.height,
+        weight: res.data.weight,
+      },
+    });
+    // localStorage.setItem(url, JSON.stringify({
+    //     nombre: res.data.name,
+    //     foto: res.data.sprites.front_default,
+    //     alto: res.data.height,
+    //     ancho: res.data.weight
+    // }))
+  } catch (error) {
+    console.log(error.response);
+  }
+};
