@@ -5,6 +5,9 @@
 
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
+.pokemon-card {
+  position: relative;
+}
 .pokemon-card img {
   width: 200px;
   height: 200px;
@@ -13,4 +16,66 @@
   /* margin-top: calc(-100px - 5px); */
   background-color: rgb(224, 204, 204);
   object-fit: contain;
+}
+.pokemon-card:hover > .card-background-hover,
+.pokemon-card:hover > .card-name-hover,
+.pokemon-card:hover > .card-button-hover {
+  display: block;
+}
+
+.actions-poke-button {
+  cursor: pointer;
+  font: normal normal bold 18px/22px Poppins;
+  z-index: 1;
+  width: 100px;
+  height: 40px;
+  color: #2d127a;
+  margin: 10px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border-radius: 8px;
+  opacity: 1;
+}
+.card-button-hover {
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  font: normal normal bold 18px/22px Poppins;
+  z-index: 1;
+  width: 100px;
+  height: 40px;
+  color: #2d127a;
+  top: 70%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  /* UI Properties */
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border-radius: 8px;
+  opacity: 1;
+}
+.card-name-hover {
+  display: none;
+  position: absolute;
+  text-align: center;
+  top: 40%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  font-size: 30px;
+  color: #fff;
+}
+.card-background-hover {
+  display: none;
+  background: transparent
+    linear-gradient(180deg, #0000004d 0%, #000000cc 66%, #000000e6 100%) 0% 0%
+    no-repeat padding-box;
+  border-radius: 15px;
+  opacity: 1;
+  /* z-index: 1; */
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: 30%;
 }

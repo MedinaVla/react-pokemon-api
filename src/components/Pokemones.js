@@ -30,13 +30,25 @@ const Pokemons = () => {
     <div>
       <h1>Pokemons!</h1>
 
-      <button onClick={() => dispatch(getPreviousPokemonsAction())}>
+      <button
+        className="actions-poke-button"
+        onClick={() => dispatch(getPreviousPokemonsAction())}
+      >
         Previous
       </button>
-      <button onClick={() => dispatch(getNextPokemonsAction())}>Next</button>
+      <button
+        className="actions-poke-button"
+        onClick={() => dispatch(getNextPokemonsAction())}
+      >
+        Next
+      </button>
       <div className="pokemons-container">
         {pokemons.map((item) => (
           <div className="pokemon-card" key={item.name}>
+            <span className="card-background-hover"></span>
+            <div className="card-name-hover">{item.name}</div>
+            <button className="card-button-hover">Details</button>
+
             <img
               alt={item.sprites.front_default}
               src={item.sprites.other.dream_world.front_default}
