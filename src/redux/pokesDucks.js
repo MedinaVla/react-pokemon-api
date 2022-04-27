@@ -117,13 +117,7 @@ export const unPokeDetalleAccion = (url) => async (dispatch, getState) => {
   if (url === undefined) {
     url = "https://pokeapi.co/api/v2/pokemon/1/";
   }
-  //   if (localStorage.getItem(url)) {
-  //     dispatch({
-  //       type: POKE_INFO_EXITO,
-  //       payload: JSON.parse(localStorage.getItem(url)),
-  //     });
-  //     return;
-  //   }
+
   try {
     const res = await axios.get(url);
     // console.log(res.data)
