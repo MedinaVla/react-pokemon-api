@@ -1,10 +1,9 @@
 import { Provider } from "react-redux";
-import generateStore from "./redux/store";
+// import generateStore from "./redux/store";
+import store from "./redux/store";
 import Pokemons from "./components/Pokemones";
 
 function App() {
-  const store = generateStore();
-
   return (
     <Provider store={store}>
       <Pokemons />

@@ -1,9 +1,9 @@
 import React from "react";
 const PokemonDetail = ({ poken }) => {
   return (
-    <div id={poken.name} class="modal">
+    <div id={poken.name} className="modal">
       <div className="modal-contenido">
-        <a href="#" class="close"></a>
+        <a href="#" className="close"></a>
 
         <img
           id="modal-img"

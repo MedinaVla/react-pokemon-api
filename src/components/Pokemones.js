@@ -1,6 +1,8 @@
 // hooks react redux
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
+import { getPokemonsController } from "../controllers/PokemonsController";
+import { setPokemons } from "../redux/pokeSlice";
 import Loading from "./Loading";
 import PokemonDetail from "./PokemonDetail";
 import "../css/Pokemons.css";
@@ -23,18 +25,22 @@ const Pokemons = () => {
   });
 
   useEffect(() => {
+    console.log("Iniciando Effect");
+
     const getPokemons = async () => {
       try {
-        await dispatch(getPokemonsAction());
+        console.log("getPokemons Effect");
+
+        await getPokemonsController();
+        console.log("getPokemonsController");
+
         setIsLoading(false);
       } catch (error) {
         console.log("Hubo un problema con la petición Fetch:" + error.message);
       }
     };
-    setTimeout(() => {
-      getPokemons();
-    }, 2000);
-  }, [dispatch]);
+    getPokemons();
+  }, []);
 
   return (
     <div>
@@ -43,13 +49,13 @@ const Pokemons = () => {
 
         <button
           className="actions-poke-button"
-          onClick={() => dispatch(getPreviousPokemonsAction())}
+          // onClick={() => dispatch(getPreviousPokemonsAction())}
         >
           Previous
         </button>
         <button
           className="actions-poke-button"
-          onClick={() => dispatch(getNextPokemonsAction())}
+          // onClick={() => dispatch(getNextPokemonsAction())}
         >
           Next
         </button>
